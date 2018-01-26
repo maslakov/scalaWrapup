@@ -80,8 +80,17 @@ object Visualization {
     Color(red.toInt, green.toInt, blue.toInt)
   }
 
-  def index(xy: (Int, Int)): Int = ???
+  def indexy(xy: (Int, Int)): (Int,Int) = {
+    val xOff = -180
+    val yOff = 90
+    val px = xy._2 - xOff
+    val py = xy._1 - yOff
+    (px,py)
+  }
 
+  def index(xy:(Int,Int)): Int = {
+    xy._1 + 360*xy._2
+  }
   /**
     * @param temperatures Known temperatures
     * @param colors       Color scale
@@ -89,22 +98,22 @@ object Visualization {
     */
   def visualize(temperatures: Iterable[(Location, Temperature)], colors: Iterable[(Temperature, Color)]): Image = {
     val points = for(x <- -180 until 180;
-    y <- -89 until 91) yield (x,y)
+    y <- -89 until 91) yield (y,x)
 
     assert(points.size == 180*360)
 
     val pixels = points.par
-      .map(p => (p,predictTemperature(temperatures, Location(p._1, p._2))))
+      .map(p => (p ,predictTemperature(temperatures, Location(p._1, p._2))))
       .map(pt => (pt._1,interpolateColor(colors, pt._2)))
       .map(ptc => (ptc._1, Pixel(ptc._2.red, ptc._2.green, ptc._2.blue,0)))
 
     val pxl = Array[Pixel](pixels.size)
 
     pixels.foreach(p => {
-      pxl.update(index(p._1), p._2)
+      pxl.update(index(indexy(p._1)), p._2)
     })
 
-    Image(361,181,pxl)
+    Image(360,180,pxl)
   }
 
 }
