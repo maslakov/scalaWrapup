@@ -12,9 +12,9 @@ import scala.collection.JavaConverters._
 
 
 object SparkContextKeeper {
-  val conf = new SparkConf().setMaster("local[2]").setAppName("my app")
+  val conf: SparkConf = new SparkConf().setMaster("local[2]").setAppName("my app")
   val sc = new SparkContext(conf)
-  val sparkSession = SparkSession.builder
+  val sparkSession: SparkSession = SparkSession.builder
     .config(conf = conf)
     .appName("spark session example")
     .getOrCreate()
