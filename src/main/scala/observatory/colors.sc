@@ -42,3 +42,27 @@ val data = Seq(
 )
 val predict = Visualization.predictTemperature(data,Location(10.1,10.1))
 
+val xy1 = Visualization.indexy((68,-74))
+Visualization.index(xy1)
+
+val lat_lon = (0,0)
+
+val xOff = 180
+val yOff = 90
+
+val lat = lat_lon._1
+val lon = lat_lon._2
+val px = lon + xOff
+val py = yOff - lat
+
+
+Visualization.indexy((0,0))
+
+
+Visualization.indexy((68,-22))
+Visualization.indexy((-68,-22))
+Visualization.indexy((-68,22))
+Visualization.indexy((68,22))
+Visualization.indexy((1,67))
+
+Visualization.index((247,89))

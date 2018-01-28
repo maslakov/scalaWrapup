@@ -50,4 +50,9 @@ trait VisualizationTest extends FunSuite with Checkers {
     val predict = Visualization.predictTemperature(data,Location(10.1,10.2))
     assert(predict > 23 && predict < 25)
   }
+
+  test("pixel xy"){
+    val xy = Visualization.indexy((68,-74))
+
+  }
 }

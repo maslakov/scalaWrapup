@@ -77,14 +77,16 @@ object Visualization {
     val red = (colorMax.red - colorMin.red) * f + colorMin.red
     val green = (colorMax.green - colorMin.green) * f + colorMin.green
     val blue = (colorMax.blue - colorMin.blue) * f + colorMin.blue
-    Color(red.toInt, green.toInt, blue.toInt)
+    Color(red.round.toInt, green.round.toInt, blue.round.toInt)
   }
 
-  def indexy(xy: (Int, Int)): (Int,Int) = {
-    val xOff = -180
+  def indexy(lat_lon: (Int, Int)): (Int,Int) = {
+    val xOff = 180
     val yOff = 90
-    val px = xy._2 - xOff
-    val py = xy._1 - yOff
+    val lat = lat_lon._1
+    val lon = lat_lon._2
+    val px = lon + xOff
+    val py = yOff - lat
     (px,py)
   }
 
@@ -97,21 +99,30 @@ object Visualization {
     * @return A 360×180 image where each pixel shows the predicted temperature at its location
     */
   def visualize(temperatures: Iterable[(Location, Temperature)], colors: Iterable[(Temperature, Color)]): Image = {
-    val points = for(x <- -180 until 180;
-    y <- -89 until 91) yield (y,x)
+    val points = for(lon <- -180 until 180;
+    lat <- -89 until 91) yield (lat,lon)
 
     assert(points.size == 180*360)
 
     val pixels = points.par
       .map(p => (p ,predictTemperature(temperatures, Location(p._1, p._2))))
       .map(pt => (pt._1,interpolateColor(colors, pt._2)))
-      .map(ptc => (ptc._1, Pixel(ptc._2.red, ptc._2.green, ptc._2.blue,0)))
+      .map(ptc => (ptc._1, Pixel(com.sksamuel.scrimage.Color(ptc._2.red, ptc._2.green, ptc._2.blue))))
 
-    val pxl = Array[Pixel](pixels.size)
+    assert(pixels.size == points.size)
+
+    val pxl = new Array[Pixel](points.size)
+
+
 
     pixels.foreach(p => {
-      pxl.update(index(indexy(p._1)), p._2)
+      val xy = indexy(p._1)
+      val i = index(xy)
+      println(p._1 + " ->" + xy +" ->" + i + s" (${p._2})")
+      pxl.update(i, p._2)
     })
+
+    assert(pxl.size == 180*360)
 
     Image(360,180,pxl)
   }
