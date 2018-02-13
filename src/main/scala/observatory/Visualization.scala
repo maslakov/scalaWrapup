@@ -13,9 +13,10 @@ object Visualization {
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Temperature)], location: Location): Temperature = {
+    val p = 3
     val twd = temperatures.par.map { case (l, t) => {
       val dis = distance(l.lon, l.lat, location.lon, location.lat)
-      val w = if (dis != 0) 1 / (dis * dis) else 1
+      val w = if (dis != 0) 1 / Math.pow(dis, p) else 1
       (t, w, dis)
     }
     }.toList
@@ -61,37 +62,37 @@ object Visualization {
     color
   }
 
-  def getAbove(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
+  private def getAbove(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
 
     val maxItems = sortedPoints.filter(p => p._1 >= value) // ascending 0 12 30 50
     if (maxItems.nonEmpty) maxItems.head else sortedPoints.last
   }
 
-  def getBelow(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
+  private def getBelow(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
 
     val minItems = sortedPoints.filter(p => p._1 <= value) // ascending -50 -27 -12 0
     if (minItems.nonEmpty) minItems.last else sortedPoints.head
   }
 
-  def interpolateColor(colorMax: Color, colorMin: Color, f: Double): Color = {
+  private def interpolateColor(colorMax: Color, colorMin: Color, f: Double): Color = {
     val red = (colorMax.red - colorMin.red) * f + colorMin.red
     val green = (colorMax.green - colorMin.green) * f + colorMin.green
     val blue = (colorMax.blue - colorMin.blue) * f + colorMin.blue
     Color(red.round.toInt, green.round.toInt, blue.round.toInt)
   }
 
-  def indexy(lat_lon: (Int, Int)): (Int,Int) = {
+  def indexy(lat_lon: GeoPoint): MapPoint = {
     val xOff = 180
     val yOff = 90
-    val lat = lat_lon._1
-    val lon = lat_lon._2
+    val lat = lat_lon.lat
+    val lon = lat_lon.lon
     val px = lon + xOff
     val py = yOff - lat
-    (px,py)
+    MapPoint(px.toInt,py.toInt)
   }
 
-  def index(xy:(Int,Int)): Int = {
-    xy._1 + 360*xy._2
+  def index(xy:MapPoint): Int = {
+    xy.x + 360*xy.y
   }
   /**
     * @param temperatures Known temperatures
@@ -100,12 +101,12 @@ object Visualization {
     */
   def visualize(temperatures: Iterable[(Location, Temperature)], colors: Iterable[(Temperature, Color)]): Image = {
     val points = for(lon <- -180 until 180;
-    lat <- -89 until 91) yield (lat,lon)
+    lat <- -89 until 91) yield GeoPoint(lat,lon)
 
     assert(points.size == 180*360)
 
     val pixels = points.par
-      .map(p => (p ,predictTemperature(temperatures, Location(p._1, p._2))))
+      .map(p => (p ,predictTemperature(temperatures, Location(p.lat, p.lon))))
       .map(pt => (pt._1,interpolateColor(colors, pt._2)))
       .map(ptc => (ptc._1, Pixel(com.sksamuel.scrimage.Color(ptc._2.red, ptc._2.green, ptc._2.blue))))
 

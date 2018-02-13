@@ -52,7 +52,7 @@ trait VisualizationTest extends FunSuite with Checkers {
   }
 
   test("pixel xy"){
-    val xy = Visualization.indexy((68,-74))
+    val xy = Visualization.indexy(GeoPoint(68,-74))
 
   }
 }
