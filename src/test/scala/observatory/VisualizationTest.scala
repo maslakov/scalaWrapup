@@ -28,7 +28,7 @@ trait VisualizationTest extends FunSuite with Checkers {
 
   test("Mid temperature"){
     val res = Visualization.interpolateColor(observatory.referenceColors, 6.0);
-    assertResult(Color(127,255,127))(res)
+    assertResult(Color(128,255,128))(res)
   }
 
   test("Predict by eq"){

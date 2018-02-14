@@ -53,7 +53,7 @@ object Interaction {
 
     pixels.foreach(p => {
       val i = tile_index(p._1)
-      println(p._1 + " ->" + p._1 +" ->" + i + s" (${p._2})")
+      //println(p._1 + " ->" + p._1 +" ->" + i + s" (${p._2})")
       pxl.update(i, p._2)
     })
 
@@ -75,8 +75,8 @@ object Interaction {
   ): Unit = {
     yearlyData.par.foreach(yd =>{
       val tiles = for(zoom <- 0 until 4;
-          x <- 0 until zoom+1;
-          y <- 0 until zoom+1)
+          x <- 0 until scala.math.pow(2,zoom).toInt;
+          y <- 0 until scala.math.pow(2,zoom).toInt)
         yield Tile(x, y, zoom)
 
       tiles.foreach(tile =>{
