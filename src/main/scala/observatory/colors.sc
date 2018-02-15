@@ -1,4 +1,4 @@
-import observatory.{Color, Location, Temperature, Visualization}
+import observatory._
 
 val sortedPoints: List[(Temperature, Color)] = observatory.referenceColors.sortBy(p=>p._1).toList
 
@@ -42,7 +42,7 @@ val data = Seq(
 )
 val predict = Visualization.predictTemperature(data,Location(10.1,10.1))
 
-val xy1 = Visualization.indexy((68,-74))
+val xy1 = Visualization.indexy(GeoPoint(68,-74))
 Visualization.index(xy1)
 
 val lat_lon = (0,0)
@@ -56,13 +56,13 @@ val px = lon + xOff
 val py = yOff - lat
 
 
-Visualization.indexy((0,0))
+Visualization.indexy(GeoPoint(0,0))
 
 
-Visualization.indexy((68,-22))
-Visualization.indexy((-68,-22))
-Visualization.indexy((-68,22))
-Visualization.indexy((68,22))
-Visualization.indexy((1,67))
+Visualization.indexy(GeoPoint(68,-22))
+Visualization.indexy(GeoPoint(-68,-22))
+Visualization.indexy(GeoPoint(-68,22))
+Visualization.indexy(GeoPoint(68,22))
+Visualization.indexy(GeoPoint(1,67))
 
-Visualization.index((247,89))
+Visualization.index(MapPoint(247,89))

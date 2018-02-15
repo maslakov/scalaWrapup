@@ -62,13 +62,13 @@ object Visualization {
     color
   }
 
-  private def getAbove(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
+  def getAbove(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
 
     val maxItems = sortedPoints.filter(p => p._1 >= value) // ascending 0 12 30 50
     if (maxItems.nonEmpty) maxItems.head else sortedPoints.last
   }
 
-  private def getBelow(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
+  def getBelow(sortedPoints: List[(Temperature, Color)], value: Temperature): (Temperature, Color) = {
 
     val minItems = sortedPoints.filter(p => p._1 <= value) // ascending -50 -27 -12 0
     if (minItems.nonEmpty) minItems.last else sortedPoints.head
@@ -119,7 +119,7 @@ object Visualization {
     pixels.foreach(p => {
       val xy = indexy(p._1)
       val i = index(xy)
-      println(p._1 + " ->" + xy +" ->" + i + s" (${p._2})")
+      //println(p._1 + " ->" + xy +" ->" + i + s" (${p._2})")
       pxl.update(i, p._2)
     })
 
