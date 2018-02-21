@@ -17,4 +17,13 @@ package object observatory {
     (-60.0,Color(0,0,0))
   )
 
+  val gridColors: Seq[(Temperature, Color)] = List(
+    (7.0,Color(0,0,0)),
+    (4.0,Color(255,0,0)),
+    (2.0,Color(255,255,0)),
+    (0.0,Color(255,255,255)),
+    (-2.0,Color(0,255,255)),
+    (-7.0,Color(0,0,255))
+  )
+
 }
