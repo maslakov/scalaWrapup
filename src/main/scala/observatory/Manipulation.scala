@@ -19,6 +19,8 @@ object Manipulation {
       .map(p => p -> predictTemperature(temperatures, Location(p.lat, p.lon)))
       .toMap
 
+        println(s"makeGrid for ${System.identityHashCode(temperatures)}")
+
     (gl : GridLocation) => temps(gl)
   }
 
@@ -46,7 +48,11 @@ object Manipulation {
     * @return A grid containing the deviations compared to the normal temperatures
     */
   def deviation(temperatures: Iterable[(Location, Temperature)], normals: GridLocation => Temperature): GridLocation => Temperature = {
-    ???
+    val fn = makeGrid(temperatures)
+
+    (gl : GridLocation) =>{
+      fn(gl) - normals(gl)
+    }
   }
 
 
